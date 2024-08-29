@@ -1,0 +1,16 @@
+﻿<Application x:Class="Caro.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Caro"
+             xmlns:themeviewmodel="clr-namespace:Caro.ViewModels.Theme"
+             StartupUri="Views/MenuWindow.xaml"
+             ShutdownMode="OnMainWindowClose">
+    <Application.Resources>
+        <!-- Default to LightTheme -->
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Themes/neontheme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

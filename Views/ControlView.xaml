@@ -1,0 +1,244 @@
+﻿<UserControl x:Class="Caro.Views.ControlView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Caro.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="300">
+    <UserControl.Resources>
+        <DropShadowEffect x:Key="ShadowTurnXColor" 
+                          Color="{DynamicResource Shadow_TurnX_Color}" 
+                          BlurRadius="{DynamicResource ResourceKey=BlurRadius_Shadow_Double}" 
+                          ShadowDepth="{DynamicResource ResourceKey=ShadowDeep_Shadow_Double}"/>
+        <DropShadowEffect x:Key="ShadowTurnOColor" 
+                          Color="{DynamicResource Shadow_TurnO_Color}" 
+                          BlurRadius="{DynamicResource ResourceKey=BlurRadius_Shadow_Double}" 
+                          ShadowDepth="{DynamicResource ResourceKey=ShadowDeep_Shadow_Double}"/>
+    </UserControl.Resources>
+    <StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+        <ComboBox   ItemsSource="{Binding DataContext.ThemeViewModel.ThemeNames,
+                        RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                    SelectedItem="{Binding DataContext.ThemeViewModel.CurrentTheme, Mode=TwoWay,
+                        RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+                    Template="{DynamicResource ResourceKey=RoundedComboBoxTemplate}"
+                    ItemContainerStyle="{DynamicResource ResourceKey=ItemContainerStyleComboBox}"
+                    Height="30" 
+                    Width="150"
+                    Margin="0 20">
+        </ComboBox>
+            
+        </Grid>
+        <Border     BorderThickness="7" 
+                    Margin="5" 
+                    Height="200" 
+                    Width="250">
+            <Grid   Height="200" 
+                    Width="250" 
+                    VerticalAlignment="Center">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="7*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock  
+                                Grid.Row="1"
+                                Text="CNP GAME"
+                                VerticalAlignment="Top"
+                                HorizontalAlignment="Center"
+                                FontSize="20"
+                                FontFamily="Maiandra GD">
+                        <TextBlock.Style>
+                            <Style TargetType="TextBlock">
+                                <Style.Triggers>
+                                    <DataTrigger    Binding="{Binding CurrentPlayer}" 
+                                                    Value="True">
+                                        <Setter     Property="Foreground" 
+                                                    Value="{DynamicResource ResourceKey=Foreground_XPiece_Color}"/>
+                                    </DataTrigger>
+                                    <DataTrigger    Binding="{Binding CurrentPlayer}" 
+                                                    Value="False">
+                                        <Setter     Property="Foreground" 
+                                                    Value="{DynamicResource ResourceKey=Foreground_OPiece_Color}"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                                
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock  Grid.Column="0" 
+                                Text="X" 
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                FontSize="130"
+                                Width="100"
+                                Style="{DynamicResource ResourceKey=CurrentPlayerStyleForX}"/>
+
+                        <TextBlock  Grid.Column="1" 
+                                Text="O" 
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Width="100"
+                                FontSize="130"
+                                Style="{DynamicResource ResourceKey=CurrentPlayerStyleForO}" Margin="7,0,0,0"/>
+                    </Grid>
+                </Grid>
+            </Grid>
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Style.Triggers>
+                        <DataTrigger    Binding="{Binding CurrentPlayer}" 
+                                        Value="True">
+                            <Setter     Property="BorderBrush" 
+                                        Value="{DynamicResource ResourceKey=Foreground_XPiece_Color}"/>
+                            <Setter     Property="Effect" 
+                                        Value="{StaticResource ShadowTurnXColor}"/>
+                        </DataTrigger>
+                        <DataTrigger    Binding="{Binding CurrentPlayer}" 
+                                        Value="False">
+                            <Setter     Property="BorderBrush" 
+                                        Value="{DynamicResource ResourceKey=Foreground_OPiece_Color}"/>
+                            <Setter     Property="Effect" 
+                                        Value="{StaticResource ShadowTurnOColor}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+
+        </Border>
+        <Border     Margin="10" 
+                    CornerRadius="10" 
+                    Background="{DynamicResource ResourceKey=Background_ScoreBoard_Color}">
+            <Grid   Margin="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" 
+                           Text="{Binding P1Score}" 
+                           FontSize="30"
+                           VerticalAlignment="Center" 
+                           HorizontalAlignment="Center"
+                           FontFamily="Agency FB">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger    Binding="{Binding Player1Piece}" 
+                                                Value="True">
+                                    <Setter     Property="Foreground" 
+                                                Value="{DynamicResource ResourceKey=Foreground_XPiece_Color}"/>
+                                </DataTrigger>
+                                <DataTrigger    Binding="{Binding Player1Piece}" Value="False">
+                                    <Setter     Property="Foreground" 
+                                                Value="{DynamicResource ResourceKey=Foreground_OPiece_Color}"/>
+                                </DataTrigger>
+
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+                <TextBlock Grid.Row="1" Text="{Binding P2Score}" FontSize="30"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"
+                           FontFamily="Agency FB">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Player2Piece}" Value="True">
+                                    <Setter Property="Foreground" Value="{DynamicResource ResourceKey=Foreground_XPiece_Color}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Player2Piece}" Value="False">
+                                    <Setter Property="Foreground" Value="{DynamicResource ResourceKey=Foreground_OPiece_Color}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Style.Triggers>
+                        <DataTrigger    Binding="{Binding CurrentPlayer}" 
+                            Value="True">
+                            <Setter     Property="BorderBrush" 
+                            Value="{DynamicResource ResourceKey=Foreground_XPiece_Color}"/>
+                            <Setter     Property="Effect" 
+                            Value="{StaticResource ShadowTurnXColor}"/>
+                        </DataTrigger>
+                        <DataTrigger    Binding="{Binding CurrentPlayer}" 
+                            Value="False">
+                            <Setter     Property="BorderBrush" 
+                            Value="{DynamicResource ResourceKey=Foreground_OPiece_Color}"/>
+                            <Setter     Property="Effect" 
+                            Value="{StaticResource ShadowTurnOColor}"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button 
+                Grid.Column="0"
+                Height="50"
+                Margin="5"
+                Content="Undo"
+                Command="{Binding UndoCommand}"
+                Style="{DynamicResource ResourceKey=OptionButton}"
+                FontSize="20"
+                IsEnabled="{Binding EnableUndoAndNewGame}">
+            </Button>
+            <Button 
+                Grid.Column="1"
+                Margin="5"
+                Content="New Game"
+                Command="{Binding NewGameCommand}"
+                Style="{DynamicResource ResourceKey=OptionButton}"
+                FontSize="20"
+                IsEnabled="{Binding EnableUndoAndNewGame}">
+            </Button>
+        </Grid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <ComboBox   Grid.Column="1"
+                    Template="{DynamicResource ResourceKey=RoundedComboBoxTemplate}"
+                    ItemContainerStyle="{DynamicResource ResourceKey=ItemContainerStyleComboBox}"
+                    Height="30"
+                    Width="100"
+                    ItemsSource="{Binding ListBoardSize}"
+                    SelectedItem="{Binding BoardSize, Mode=TwoWay}"
+                    IsEnabled="{Binding EnableUndoAndNewGame}"/>
+            <TextBlock Grid.Column="0"
+                       Text="Board Ratio: "
+                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                       Margin="10 0 0 0"
+                       Foreground="{DynamicResource Foreground_XPiece_Color}"
+                       FontSize="30"
+                       FontFamily="Agency FB"/>
+        </Grid>
+
+        <Button Style="{DynamicResource ExitButton}"
+                Content="EXIT" Height="50" Margin="40"
+                Command="{Binding ExitCommand}"
+                CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
+                FontSize="20">
+        </Button>
+
+    </StackPanel>
+</UserControl>

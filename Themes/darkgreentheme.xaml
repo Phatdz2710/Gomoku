@@ -1,0 +1,58 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:core="clr-namespace:System;assembly=mscorlib">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="BaseTheme.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- Backgrounds -->
+    <SolidColorBrush x:Key="Background_MainBackground_Color"        Color="#1B2A22" /> <!-- Xanh đậm -->
+    <SolidColorBrush x:Key="Background_ScoreBoard_Color"            Color="#24322D" /> <!-- Xanh rêu đậm -->
+    <SolidColorBrush x:Key="Background_MessageBox_Color"            Color="#2E3D35" /> <!-- Xanh tối -->
+    <SolidColorBrush x:Key="Background_Board_Color"                 Color="#1F2F26" /> <!-- Xanh rêu nhạt -->
+
+    <!-- Foregrounds -->
+    <SolidColorBrush x:Key="Foreground_MessageBox_Color"            Color="#A5D6A7" /> <!-- Xanh nhạt -->
+    <SolidColorBrush x:Key="Foreground_XPiece_Color"                Color="#4CAF50" /> <!-- Xanh lá cây -->
+    <SolidColorBrush x:Key="Foreground_OPiece_Color"                Color="#81C784" /> <!-- Xanh lá nhạt -->
+    <SolidColorBrush x:Key="Foreground_WinPiece_Color"              Color="#C8E6C9" /> <!-- Xanh lục bảo -->
+    <SolidColorBrush x:Key="Foreground_NoXTurn_Color"               Color="#388E3C" /> <!-- Xanh lá đậm -->
+    <SolidColorBrush x:Key="Foreground_NoOTurn_Color"               Color="#66BB6A" /> <!-- Xanh lá tươi -->
+
+    <!-- Borders -->
+    <SolidColorBrush x:Key="BorderBrush_XTurn_Color"                Color="#2E7D32" /> <!-- Xanh lá cây đậm -->
+    <SolidColorBrush x:Key="BorderBrush_OTurn_Color"                Color="#43A047" /> <!-- Xanh lá cây trung bình -->
+    <SolidColorBrush x:Key="BorderBrush_OptionButton_Color"         Color="#388E3C" /> <!-- Xanh lá đậm -->
+
+    <!-- Hover States -->
+    <SolidColorBrush x:Key="Hover_Cell_Color"                       Color="#3E4C44" /> <!-- Xanh tối hơn -->
+    <SolidColorBrush x:Key="Hover_OptionButton_Color"               Color="#4CAF50" /> <!-- Xanh lá cây -->
+
+    <!-- Buttons -->
+    <SolidColorBrush x:Key="Background_OptionButton_Color"          Color="#2E7D32" /> <!-- Xanh lá cây đậm -->
+    <SolidColorBrush x:Key="Foreground_OptionButton_Color"          Color="#A5D6A7" /> <!-- Xanh nhạt -->
+    <SolidColorBrush x:Key="Background_ExitButton_Color"            Color="#1B2A22" /> <!-- Xanh đậm -->
+    <SolidColorBrush x:Key="BorderBrush_ExitButton_Color"           Color="#2E7D32" /> <!-- Xanh lá cây đậm -->
+    <SolidColorBrush x:Key="Foreground_ExitButton_Color"            Color="#A5D6A7" /> <!-- Xanh nhạt -->
+    <SolidColorBrush x:Key="Hover_ExitButton_Color"                 Color="#388E3C" /> <!-- Xanh lá đậm -->
+
+    <!-- Dropdowns -->
+    <SolidColorBrush x:Key="Background_SelectTheme_Color"           Color="#24322D" /> <!-- Xanh rêu đậm -->
+    <SolidColorBrush x:Key="Hover_SelectTheme_Color"                Color="#2E3D35" /> <!-- Xanh tối -->
+    <SolidColorBrush x:Key="Foreground_SelectThemeComboBox_Color"   Color="#A5D6A7" /> <!-- Xanh nhạt -->
+    <SolidColorBrush x:Key="Background_DropDownItem_Color"          Color="#2E7D32" /> <!-- Xanh lá cây đậm -->
+    <SolidColorBrush x:Key="BorderBrush_DropDownItem_Color"         Color="#388E3C" /> <!-- Xanh lá đậm -->
+    <SolidColorBrush x:Key="Background_Item_Color"                  Color="#3E4C44" /> <!-- Xanh tối hơn -->
+    <SolidColorBrush x:Key="Foreground_Item_Color"                  Color="#A5D6A7" /> <!-- Xanh nhạt -->
+    <SolidColorBrush x:Key="Hover_Item_Color"                       Color="#4CAF50" /> <!-- Xanh lá cây -->
+
+    <!-- Shadows and Borders -->
+    <Color x:Key="Shadow_TurnX_Color">#1B5E20</Color> <!-- Xanh lá cây đậm nhất -->
+    <Color x:Key="Shadow_TurnO_Color">#2E7D32</Color> <!-- Xanh lá cây đậm -->
+    <core:Double x:Key="BlurRadius_Shadow_Double">8</core:Double> <!-- Độ mờ bóng -->
+    <core:Double x:Key="ShadowDeep_Shadow_Double">4</core:Double> <!-- Độ sâu bóng -->
+    <Thickness x:Key="BorderThickness_Cell_Double">1.2</Thickness>
+    <CornerRadius x:Key="CornerRadius_Cell_Double">4.0</CornerRadius> <!-- Đường viền bo tròn -->
+
+</ResourceDictionary>

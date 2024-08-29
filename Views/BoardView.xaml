@@ -1,0 +1,43 @@
+﻿<UserControl x:Class="Caro.Views.BoardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Caro.Views"
+             xmlns:viewmodel="clr-namespace:Caro.ViewModels"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="650">
+    
+    <!--<UserControl.Resources>
+        <TextBlock x:Key="xChar" 
+                   Text="{Binding XChar}"/>
+        <TextBlock x:Key="oChar" 
+                   Text="{Binding OChar}"/>
+    </UserControl.Resources>-->
+
+    <ItemsControl x:Name="ictrlGameBoard" ItemsSource="{Binding Cells, Mode=TwoWay}">
+        
+        <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+                <WrapPanel Orientation="Horizontal"/>
+            </ItemsPanelTemplate>
+        </ItemsControl.ItemsPanel>
+
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+                <Button Width="{Binding DataContext.CellSize, 
+                                    RelativeSource={RelativeSource AncestorType=UserControl}}" 
+                        Height="{Binding DataContext.CellSize, 
+                                    RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        Command="{Binding DataContext.CellClickCommand, 
+                                    RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        CommandParameter="{Binding Position}"
+                        FontWeight="Bold"
+                        Style="{DynamicResource ResourceKey=BoardStyle}">
+                </Button>
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+    </ItemsControl>
+
+</UserControl>

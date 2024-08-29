@@ -1,0 +1,75 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:core="clr-namespace:System;assembly=mscorlib">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="BaseTheme.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <SolidColorBrush x:Key="Background_MainBackground_Color"        Color="#1E1E1E" />
+
+    <SolidColorBrush x:Key="Background_ScoreBoard_Color"            Color="#2D2D2D" />
+
+    <SolidColorBrush x:Key="Background_MessageBox_Color"            Color="#3C3C3C" />
+
+    <SolidColorBrush x:Key="Foreground_MessageBox_Color"            Color="#E0E0E0" />
+
+    <SolidColorBrush x:Key="Background_Board_Color"                 Color="#1A1A1A" />
+
+    <SolidColorBrush x:Key="BorderBrush_XTurn_Color"                Color="#FF6347" />
+
+    <SolidColorBrush x:Key="BorderBrush_OTurn_Color"                Color="#4682B4" />
+
+    <SolidColorBrush x:Key="Hover_Cell_Color"                       Color="#505050" />
+
+    <SolidColorBrush x:Key="Foreground_XPiece_Color"                Color="#FF4500" />
+
+    <SolidColorBrush x:Key="Foreground_OPiece_Color"                Color="#1E90FF" />
+
+    <SolidColorBrush x:Key="Foreground_WinPiece_Color"              Color="#32CD32" />
+
+    <SolidColorBrush x:Key="Foreground_NoXTurn_Color"                Color="#8B0000" />
+
+    <SolidColorBrush x:Key="Foreground_NoOTurn_Color"                Color="#191970" />
+
+    <SolidColorBrush x:Key="Background_OptionButton_Color"          Color="#2F4F4F" />
+
+    <SolidColorBrush x:Key="BorderBrush_OptionButton_Color"         Color="#2F4F4F" />
+
+    <SolidColorBrush x:Key="Foreground_OptionButton_Color"          Color="#F5F5F5" />
+
+    <SolidColorBrush x:Key="Hover_OptionButton_Color"               Color="#696969" />
+
+    <SolidColorBrush x:Key="Background_ExitButton_Color"            Color="#1C1C1C" />
+
+    <SolidColorBrush x:Key="BorderBrush_ExitButton_Color"           Color="#DC143C" />
+
+    <SolidColorBrush x:Key="Foreground_ExitButton_Color"            Color="#FFFFFF" />
+
+    <SolidColorBrush x:Key="Hover_ExitButton_Color"                 Color="#8B0000" />
+
+    <SolidColorBrush x:Key="Background_SelectTheme_Color"           Color="#333333" />
+
+    <SolidColorBrush x:Key="Hover_SelectTheme_Color"                Color="#555555" />
+
+    <SolidColorBrush x:Key="Foreground_SelectThemeComboBox_Color"   Color="#FFFFFF" />
+
+    <SolidColorBrush x:Key="Background_DropDownItem_Color"          Color="#4F4F4F" />
+
+    <SolidColorBrush x:Key="BorderBrush_DropDownItem_Color"         Color="#4F4F4F" />
+
+    <SolidColorBrush x:Key="Background_Item_Color"                  Color="#696969" />
+
+    <SolidColorBrush x:Key="Foreground_Item_Color"                  Color="#FFFFFF" />
+
+    <SolidColorBrush x:Key="Hover_Item_Color"                       Color="#A9A9A9" />
+
+    <Color x:Key="Shadow_TurnX_Color">#FF4500</Color>
+    <Color x:Key="Shadow_TurnO_Color">#1E90FF</Color>
+    <core:Double x:Key="BlurRadius_Shadow_Double">8</core:Double>
+    <core:Double x:Key="ShadowDeep_Shadow_Double">4</core:Double>
+    <Thickness x:Key="BorderThickness_Cell_Double">1.5</Thickness>
+
+    <CornerRadius x:Key="CornerRadius_Cell_Double">4.0</CornerRadius>
+
+</ResourceDictionary>

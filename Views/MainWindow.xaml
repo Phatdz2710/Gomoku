@@ -1,0 +1,31 @@
+﻿<Window x:Class="Caro.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Caro"
+        xmlns:viewmodel="clr-namespace:Caro.ViewModels"
+        xmlns:views="clr-namespace:Caro.Views"
+        xmlns:viewsmb="clr-namespace:Caro.Views.MyMessageBoxView"
+        mc:Ignorable="d"
+        Title="GOMOKU" Height="650" Width="920"
+        MinHeight="650"
+        MinWidth="920"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid Background="{DynamicResource ResourceKey=Background_MainBackground_Color}">
+        <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="600" />
+                    <ColumnDefinition Width="300" />
+                 </Grid.ColumnDefinitions>
+                <views:BoardView x:Name="BoardView" Grid.Column="0" DataContext="{Binding BoardViewModel}" IsEnabled="{Binding IsPlaying}"/>
+                <views:ControlView x:Name="ControlView" Grid.Column="1" DataContext="{Binding BoardViewModel}" IsEnabled="{Binding IsPlaying}"/>
+            </Grid>
+        <viewsmb:MessageBoxView DataContext="{Binding BoardViewModel}"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Margin="200">
+        </viewsmb:MessageBoxView>
+    </Grid>
+</Window>
