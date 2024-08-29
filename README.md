@@ -2,28 +2,26 @@
 
 ## Overview
 
-Gomoku Game is a strategic board game where players take turns placing their pieces on a grid. The objective is to be the first to form an unbroken chain of five pieces horizontally, vertically, or diagonally. This game offers multiple modes of play, customization options, and online play through LAN.
+Gomoku game is strategic board game where players take turns placing their pieces on a grid. 
+If any player gets 5 consecutive unblocked pieces who will win.
 
 ## Features
 
-- **Player vs Player (PVP):** Compete against another player on the same device.
-- **Player vs AI (PVE):** Challenge the computer using an AI powered by Minimax with Alpha-beta pruning for optimal decision-making.
-- **Play over LAN:** Connect with friends and play Gomoku over a local network.
-- **Undo:** Easily revert the last move in case of mistakes or strategy changes.
-- **New Game:** Start a fresh game at any time.
-- **Resize Board:** Customize the board size to your preference.
-- **Change Theme:** Switch between different visual themes to suit your style.
+- **Player vs Player (PVP):** Two players on the same computer play together. 
+- **Player vs AI (PVE):** Play with AI (use Minimax Alpha-Beta Algothrism)
+- **Play over LAN:** Play with other player on the other computer over a local network.
+- **Undo:** Take a move back.
+- **New Game:** Reset board game.
+- **Resize Board:** Resize board game (9x9, 12x12, 15x15, 20x20).
+- **Change Theme:** You can change your favourite theme.
 
 ## Screenshots
 
-![Main Menu](./images/main_menu.png)
+![image](https://github.com/user-attachments/assets/4f0f3986-53fb-43fe-b19a-44d1410f57f4)
 *Main menu with options for PVP, PVE, and LAN play.*
 
-![Gameplay](./images/gameplay.png)
+![image](https://github.com/user-attachments/assets/a1655b3c-3991-4734-a86a-6b47216cf42a)
 *In-game screenshot showing a match in progress.*
 
 ## Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/gomoku-game.git
+Updating...
