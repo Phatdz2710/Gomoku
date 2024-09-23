@@ -45,6 +45,9 @@
             <DataTrigger Binding="{Binding IsWinningCell}" Value="True">
                 <Setter Property="Foreground" Value="{StaticResource Foreground_WinPiece_Color}"/>
             </DataTrigger>
+            <DataTrigger Binding="{Binding IsLastMove}" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource Foreground_WinPiece_Color}"/>
+            </DataTrigger>
         </Style.Triggers>
     </Style>
 

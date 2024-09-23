@@ -8,7 +8,7 @@ namespace Caro.Models.Enums
 {
     public enum AILevel
     {
-        Hard = 2,
+        Hard = 1,
         Easy = 2
     }
 }

@@ -26,11 +26,11 @@ namespace Caro.Models.Player
             }
         }
 
-        public AIPlayer(Board _board, CellState _cellState, AILevel _level) 
-            : base(_board, _cellState, "🤖 BOT")
+        public AIPlayer(Board _board, CellState _cellState, AILevel _level, string _name) 
+            : base(_board, _cellState, _name)
         {
             AILevel     =   _level;
-            AIMovement  =   new AIMovement(_board, _cellState, (int)_level);
+            AIMovement  =   new AIMovement(_board, _cellState, _level);
             _cancellationTokenSource = new CancellationTokenSource();
         }
 
@@ -51,12 +51,10 @@ namespace Caro.Models.Player
                 finally 
                 { }
                 
-            }, _cancellationTokenSource.Token);
-
-            thinking.ContinueWith(t =>
+            }, _cancellationTokenSource.Token).ContinueWith(t =>
             {
                 IsThinking = false;
-            }, TaskScheduler.FromCurrentSynchronizationContext());
+            });
         }
 
         public override void CancelMove()
@@ -68,5 +66,9 @@ namespace Caro.Models.Player
             return AIMovement.FindBestMove();
         }
 
+        public override void ClearZobristMap()
+        {
+            AIMovement.ClearZobristMap();
+        }
     }
 }

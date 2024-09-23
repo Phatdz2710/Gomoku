@@ -12,6 +12,7 @@ namespace Caro.ViewModels
         private char    _content;
         private FPoint  _position;
         private bool    _isWinningCell;
+        private bool    _isLastMove;
         private int     _sizeContent;
         public char Content
         {
@@ -38,6 +39,16 @@ namespace Caro.ViewModels
             set
             {
                 _isWinningCell = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsLastMove
+        {
+            get => _isLastMove;
+            set
+            {
+                _isLastMove = value;
                 OnPropertyChanged();
             }
         }

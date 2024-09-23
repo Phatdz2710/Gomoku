@@ -31,5 +31,10 @@ namespace Caro.Models.Player
         {
             throw new NotImplementedException();
         }
+
+        public override void ClearZobristMap()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

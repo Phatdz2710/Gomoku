@@ -32,6 +32,7 @@ namespace Caro.ViewModels
         private string  _p2PieceInfo    = String.Empty;
         private bool    _pieceOfPlayer1 = true;
         private bool    _pieceOfPlayer2 = false;
+        private CellViewModel? _lastMove;
 
         private bool    _enableUndoAndNewGame = false;
 
@@ -207,10 +208,10 @@ namespace Caro.ViewModels
             ReloadScoreBoard();
         }
 
-        public void RunBoardGame(int boardRatio, Mode gameMode, CellState firstTurn, AILevel difficultLevel = AILevel.Easy)
+        public void RunBoardGame(int boardRatio, Mode gameMode, CellState firstTurn, AILevel difficultLevel = AILevel.Hard)
         {
             IsPlaying   = true;
-            CreateNewBoard(boardRatio, gameMode, firstTurn);
+            CreateNewBoard(boardRatio, gameMode, firstTurn, difficultLevel);
             ReloadScoreBoard();
         }
 
@@ -271,7 +272,10 @@ namespace Caro.ViewModels
 
         private void OnPlayResult(object? sender, PlayResult result)
         {
+            if (_lastMove != null) _lastMove.IsLastMove = false;
             SetCellContent(result.Position, GetChar_CellState(result.Piece));
+            _lastMove = _cells[result.Position.X * _boardRatio + result.Position.Y];
+            _lastMove.IsLastMove = true;
             CurrentPlayer = _gameBoard.GetCurPlayer();
 
             if (result.GameState == GameState.Win)
@@ -304,6 +308,7 @@ namespace Caro.ViewModels
             {
                 cell.Content        = '\0';
                 cell.IsWinningCell  = false;
+                cell.IsLastMove = false;
             }
             _gameBoard.Reset();
             ReloadScoreBoard();
@@ -333,7 +338,7 @@ namespace Caro.ViewModels
             _gameBoard.ResizeBoard(_boardRatio);
         }
 
-        private void CreateNewBoard(int boardRatio, Mode gameMode, CellState firstTurn)
+        private void CreateNewBoard(int boardRatio, Mode gameMode, CellState firstTurn, AILevel aiLevel)
         {
             _boardRatio = boardRatio;
             _size = 600 / _boardRatio;
@@ -349,7 +354,7 @@ namespace Caro.ViewModels
             
             EnableUndoAndNewGame = gameMode == Mode.LAN ? false : true;
 
-            _gameBoard.CreateNewBoard(_boardRatio, gameMode, firstTurn);
+            _gameBoard.CreateNewBoard(_boardRatio, gameMode, firstTurn, aiLevel);
             _gameBoard.SetEventHandlerForGameStrategy(WaitingForOtherPlayer);
             _firstTurn = firstTurn;
 

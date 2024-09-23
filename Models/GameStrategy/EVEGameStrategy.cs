@@ -8,19 +8,13 @@ using System.Threading.Tasks;
 
 namespace Caro.Models.GameStrategy
 {
-    public class PVEGameStrategy : IGameStrategy
+    public class EVEGameStrategy : IGameStrategy
     {
-        public PVEGameStrategy(Board board, AILevel aiLevel) : base(board)
+        public EVEGameStrategy(Board board) : base(board)
         {
-            _player1 = new HumanPlayer(_board, CellState.X, "👤 Human");
-            _player2 = new AIPlayer(_board, CellState.O, aiLevel, "🤖 BOT");
+            _player1 = new AIPlayer(_board, CellState.X, AILevel.Hard, "🤖 BOT ");
+            _player2 = new AIPlayer(_board, CellState.O, AILevel.Easy, "🤖 BOT HD");
             _currentPlayer = _player1;
-            CurPiece = true;
-
-            if (_currentPlayer == _player2)
-            {
-                _currentPlayer.MakeMove(FPoint.NULL);
-            }
         }
 
         public override void MakeNewRound()
@@ -47,31 +41,26 @@ namespace Caro.Models.GameStrategy
                 }
             }
 
-            _player2.ClearZobristMap();
             _currentPlayer = _player1.Piece == CellState.X ? _player1 : _player2;
             CurPiece = true;
-            if (_currentPlayer == _player2)
-            {
-                _currentPlayer.MakeMove(FPoint.NULL);
-            }
         }
 
         public override void DoPlayAt(Board board, FPoint pos)
         {
-            _currentPlayer.MakeMove(pos);
-            if (board.IsWin()) return;
-            _currentPlayer.MakeMove(pos);
-            if (board.IsWin()) return;
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    Thread.Sleep(2000);
+                    if (_currentPlayer.IsThinking) continue;
+                    _currentPlayer.MakeMove(pos);
+                }
+            });
         }
 
         public override void Undo(Board board)
         {
-            if (board.GetSizeHistory() == 1 && _currentPlayer == _player1)
-            {
-                return;
-            }
-            board.Undo();
-            board.Undo();
+            return;
         }
 
         public override bool IsConnectingToServer()

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Runtime.CompilerServices;
+using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,22 +23,24 @@ namespace Caro.Models.ModelLogic
         {
             public int Winning      = 0;
             public int Stone4       = 0;
-            public int Stone3       = 0;
             public int Stone2       = 0;
             public int Stone4Block  = 0;
             public int Stone4OneSpace = 0;
-            public int Stone3Block  = 0;
+            public int Stone3NoBlock = 0;
+            public int Stone3OneBlock  = 0;
+            public int Stone3TwoBlock = 0;
             public NumberofScorePattern() { }
 
-            public NumberofScorePattern(int winning, int stone4, int stone4OneSpace, int stone3, int stone2, int stone4Block, int stone3Block)
+            public NumberofScorePattern(int winning, int stone4, int stone4OneSpace, int stone4Block,
+                int stone3NoBlock, int stone3OneBlock, int stone3TwoBlock, int stone2)
             {
                 Winning     = winning;
                 Stone4      = stone4;
                 Stone4OneSpace = stone4OneSpace;
-                Stone3      = stone3;
                 Stone2      = stone2;
                 Stone4Block = stone4Block;
-                Stone3Block = stone3Block;
+                Stone3OneBlock = stone3OneBlock;
+                Stone3TwoBlock = stone3TwoBlock;
             }
         }
 
@@ -48,11 +51,12 @@ namespace Caro.Models.ModelLogic
                 ListStonePattern list = new ListStonePattern();
                 if (isForX) return list;
 
-                list.Stone3Block    = convertListPattern(list.Stone3Block);
+                list.Stone3OneBlock    = convertListPattern(list.Stone3OneBlock);
                 list.Stone4Block    = convertListPattern(list.Stone4Block);
                 list.Stone4OneSpace = convertListPattern(list.Stone4OneSpace);
                 list.Stone2NoBlock  = convertListPattern(list.Stone2NoBlock);
                 list.Stone3NoBlock  = convertListPattern(list.Stone3NoBlock);
+                list.Stone3TwoBlock = convertListPattern(list.Stone3TwoBlock);
                 list.Stone4NoBlock  = convertListPattern(list.Stone4NoBlock);
                 list.winPattern     = convertListPattern(list.winPattern);
 
@@ -67,26 +71,31 @@ namespace Caro.Models.ModelLogic
             {
                 ".X.XXX.", ".XXX.X.", ".XX.XX."
             };
-           
-            public List<string> Stone3NoBlock   = new List<string>()
-            {
-                ".XXX..", "..XXX.", ".X.XX.", ".XX.X.", ".X.X.X."
-            };
-            public List<string> Stone2NoBlock   = new List<string>()
-            {
-                "..XX..", ".X.X..", "..X.X.", ".XX...", "...XX.", ".X..X."
-            };
-            public List<string> Stone4Block     = new List<string>()
+
+            public List<string> Stone4Block = new List<string>()
             {
                 "OX.XXX", "OXX.XX", "OXXX.X", "OXXXX.", ".XXXXO", "X.XXXO", "XX.XXO", "XXX.XO"
             };
-            public List<string> Stone3Block     = new List<string>()
+
+            public List<string> Stone3NoBlock   = new List<string>()
             {
-                "OXXX..", "OXX.X.", "OX.XX.", "..XXXO", ".X.XXO", ".XX.XO",
+                ".XXX..", "..XXX.", ".X.XX.", ".XX.X.",
+            };
+
+            public List<string> Stone3TwoBlock   = new List<string>()
+            {
                 "OX.X.XO", "O.XXX.O", "OXX..XO", "OX..XXO",
             };
 
-            
+            public List<string> Stone3OneBlock = new List<string>()
+            {
+                "OXXX..", "OXX.X.", "OX.XX.", "..XXXO", ".X.XXO", ".XX.XO",
+            };
+
+            public List<string> Stone2NoBlock = new List<string>()
+            {
+                "..XX..", ".X.X..", "..X.X.", ".XX...", "...XX.", ".X..X."
+            };
         }
 
         private static List<string> convertListPattern(List<string> list)
@@ -134,7 +143,7 @@ namespace Caro.Models.ModelLogic
                     scorePattern.Stone4++;
 
                 else if (IsAnyInString(directionString, listPattern.Stone3NoBlock))
-                    scorePattern.Stone3++;
+                    scorePattern.Stone3NoBlock++;
 
                 else if (IsAnyInString(directionString, listPattern.Stone4OneSpace))
                     scorePattern.Stone4OneSpace++;
@@ -142,8 +151,11 @@ namespace Caro.Models.ModelLogic
                 else if (IsAnyInString(directionString, listPattern.Stone4Block))
                     scorePattern.Stone4Block++;
 
-                else if (IsAnyInString(directionString, listPattern.Stone3Block))
-                    scorePattern.Stone3Block++;
+                else if (IsAnyInString(directionString, listPattern.Stone3OneBlock))
+                    scorePattern.Stone3OneBlock++;
+
+                else if (IsAnyInString(directionString, listPattern.Stone3TwoBlock))
+                    scorePattern.Stone3TwoBlock++;
 
                 else if (IsAnyInString(directionString, listPattern.Stone2NoBlock))
                     scorePattern.Stone2++;
@@ -206,104 +218,104 @@ namespace Caro.Models.ModelLogic
 
         private int getScoreByPattern(NumberofScorePattern numberofPattern)
         {
-            int _winGuarantee = 100000000;
+            int _winGuarantee = 10000000;
+
+            //Chac chan win
             if (numberofPattern.Winning > 0)
             {
                 return 1000000000;
             }
 
-            if (numberofPattern.Stone4 > 1)
-            {
-                return _winGuarantee;
-            }
-
+            //if (numberofPattern.Stone4 > 0 || numberofPattern.Stone4OneSpace > 1 || numberofPattern.Stone4Block > 1)
+            //{
+            //    return _winGuarantee * (numberofPattern.Stone4Block + numberofPattern.Stone4OneSpace + numberofPattern.Stone4);
+            //}
 
             if (numberofPattern.Stone4 > 0)
             {
-                return _winGuarantee / 10;
+                return _winGuarantee * numberofPattern.Stone4;
             }
-
-
-            if (numberofPattern.Stone4Block > 1)
-            {
-                return _winGuarantee / 10;
-            }
-
 
             if (numberofPattern.Stone4OneSpace > 1)
             {
-                return _winGuarantee / 10;
+                return _winGuarantee * numberofPattern.Stone4OneSpace / 20;
+            }
+
+            if (numberofPattern.Stone4Block > 1)
+            {
+                return _winGuarantee * numberofPattern.Stone4Block / 20;
             }
 
             if (numberofPattern.Stone4OneSpace > 0 && numberofPattern.Stone4Block > 0)
             {
-                return _winGuarantee / 10;
+                return _winGuarantee * (numberofPattern.Stone4OneSpace + numberofPattern.Stone4Block) / 20;
             }
 
-            if (numberofPattern.Stone4OneSpace > 0 && numberofPattern.Stone3 > 0)
+            if (numberofPattern.Stone4OneSpace > 0 && numberofPattern.Stone3NoBlock > 0)
             {
-                return _winGuarantee / 20;
+                return _winGuarantee * (numberofPattern.Stone4OneSpace + numberofPattern.Stone3NoBlock / 2) / 40;
             }
 
-            if (numberofPattern.Stone3 > 0 && numberofPattern.Stone4Block > 0)
+            if (numberofPattern.Stone3NoBlock > 0 && numberofPattern.Stone4Block > 0)
             {
-                return _winGuarantee / 50;
+                return _winGuarantee * (numberofPattern.Stone4Block + numberofPattern.Stone3NoBlock / 2) / 40;
             }
 
-            if (numberofPattern.Stone3 > 1)
+            if (numberofPattern.Stone3NoBlock > 1)
             {
-                //MessageBox.Show("Stone3");
-                return _winGuarantee / 50;
+                return _winGuarantee * numberofPattern.Stone3NoBlock / 80;
             }
 
-            if (numberofPattern.Stone3 == 1)
-            {
-                switch(numberofPattern.Stone2)
-                {
-                    case 3:     return 40000;
-                    case 2:     return 38000;
-                    case 1:     return 35000;
-                    default:    return 3450;
-                }
-            }
+
 
             if (numberofPattern.Stone4Block == 1)
             {
-                switch (numberofPattern.Stone3)
-                {
-                    case 3: return 1000000;
-                    case 2: return 400000;
-                    case 1: return 100000;
-                }
+                if (numberofPattern.Stone3OneBlock == 3) return 80000;
+                if (numberofPattern.Stone3OneBlock == 2) return 40000;
 
-                switch (numberofPattern.Stone3Block)
-                {
-                    case 3: return 100000;
-                    case 2: return 40000;
-                    case 1: return 1000;
-                }
+                if (numberofPattern.Stone2 == 3) return 25000;
+                if (numberofPattern.Stone3TwoBlock == 3) return 24000;
+                
+                if (numberofPattern.Stone3OneBlock == 1) return 30000;
 
-                switch (numberofPattern.Stone2)
-                {
-                    case 3:     return 4500;
-                    case 2:     return 4200;
-                    case 1:     return 4100;
-                    default:    return 4050;
-                }
+                if (numberofPattern.Stone2 == 2) return 20000;
+                if (numberofPattern.Stone3TwoBlock == 2) return 18000;
+
+                if (numberofPattern.Stone3TwoBlock == 1) return 10000;
+                if (numberofPattern.Stone2 == 1) return 7000;
+
+                return 3450;
             }
 
-            switch (numberofPattern.Stone3Block)
+            if (numberofPattern.Stone3NoBlock == 1)
+            {
+                if (numberofPattern.Stone3OneBlock == 3) return 80000;
+                if (numberofPattern.Stone3OneBlock == 2) return 30000;
+
+                if (numberofPattern.Stone3TwoBlock == 3) return 30000;
+                if (numberofPattern.Stone2 == 3) return 25000;
+
+                if (numberofPattern.Stone3TwoBlock == 2) return 20000;
+                if (numberofPattern.Stone2 == 2) return 18000;
+                if (numberofPattern.Stone2 == 1) return 15000;
+                if (numberofPattern.Stone3OneBlock == 1) return 12000;
+                if (numberofPattern.Stone3TwoBlock == 1) return 10250;
+
+                return 2000;
+            }
+
+
+            switch (numberofPattern.Stone3OneBlock)
             {
                 case 3:
-                    if (numberofPattern.Stone2 == 1) return 280;
+                    if (numberofPattern.Stone3TwoBlock == 1) return 9000;
+                    if (numberofPattern.Stone2 == 1) return 8000;
                     break;
                 case 2:
-                    switch (numberofPattern.Stone2)
-                    {
-                        case 2: return 3000;
-                        case 1: return 2900;
-
-                    }
+                    if (numberofPattern.Stone2 == 2) return 9000;
+                    if (numberofPattern.Stone3TwoBlock == 2) return 8500;
+                    if (numberofPattern.Stone2 == 1) return 2000;
+                    if (numberofPattern.Stone3TwoBlock == 1) return 1800;
                     break;
                 case 1:
                     switch (numberofPattern.Stone2)
@@ -311,9 +323,15 @@ namespace Caro.Models.ModelLogic
                         case 3: return 3400;
                         case 2: return 3300;
                         case 1: return 3100;
-
+                    }
+                    switch (numberofPattern.Stone3TwoBlock)
+                    {
+                        case 3: return 3000;
+                        case 2: return 2000;
+                        case 1: return 1000;
                     }
                     break;
+                default: return 500;
             }
 
             switch (numberofPattern.Stone2)
@@ -321,35 +339,25 @@ namespace Caro.Models.ModelLogic
                 case 4: return 2700;
                 case 3: return 2500;
                 case 2: return 2000;
-                case 1: return 1000;
-
+                case 1: return 200;
             }
+
             return 0;
         }
 
-        private int heuristic (Board board)
+
+        private int heuristic(Board board)
         {
             FPoint latestPos = board.GetLastestMove();
 
             //Check if this move is player move
-            CellState playerCellValue       = board.GetCellStateAt(latestPos);
-            List<string> allDirection       = GetAllListDirection(board, latestPos, playerCellValue);
+            CellState playerCellValue = board.GetCellStateAt(latestPos);
+            List<string> allDirection = GetAllListDirection(board, latestPos, playerCellValue);
             bool isForX = (playerCellValue == CellState.X);
             NumberofScorePattern scorePattern = valuePosition(allDirection, isForX);
             int playerValue = getScoreByPattern(scorePattern);
 
-            //Check if this move is enemy move
-            CellState opponentCellValue     = playerCellValue == CellState.X ? CellState.O : CellState.X;
-            board.Cells[latestPos.X][latestPos.Y] = opponentCellValue == CellState.X ? 1 : -1;
-            List<string> enemyAllDirection  = GetAllListDirection(board, latestPos, opponentCellValue);
-            isForX = !isForX;
-            NumberofScorePattern enemyScorePattern = valuePosition(enemyAllDirection, isForX);
-            int enemyValue = getScoreByPattern(enemyScorePattern);
-
-            //reset board cell at pos 
-            board.Cells[latestPos.X][latestPos.Y] = opponentCellValue == CellState.X ? -1 : 1;
-
-            return playerValue * 2 + enemyValue;
+            return playerValue;
         }
 
         public int getScore(Board board)

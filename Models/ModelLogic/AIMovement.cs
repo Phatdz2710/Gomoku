@@ -15,27 +15,52 @@ namespace Caro.Models.Services
     {
         #region Fields
         private Board _board;
-        private int MAX_DEPTH = 1;
+        //private int MAX_DEPTH = 1;
+        private AILevel _mode = AILevel.Easy;
         private Evaluate AIEvaluate;
         #endregion
         public int MyPiece { get; set; }
 
+        int maxDepth = 4;
+        int radius = 1;
+        
+
+
         #region Constructor
-        public AIMovement(Board board, CellState myPiece, int difficultLevel)
+        public AIMovement(Board board, CellState myPiece, AILevel lvl)
         {
             _board      = board;
             MyPiece     = (int)myPiece;
             AIEvaluate  = new Evaluate(); 
-            MAX_DEPTH   = difficultLevel;
+            _mode   = lvl;
+
+            if (_mode == AILevel.Easy)
+            {
+                maxDepth = 3;
+                radius = 2;
+            }
+            else
+            {
+                maxDepth = 4;
+                radius = 1;
+            }
         }
+
+        private Dictionary<ulong, KeyValuePair<int, int>> zobristMap = new Dictionary<ulong, KeyValuePair<int, int>>();
+
+        private Dictionary<ulong, TranspositionTable> transpositionMap = new Dictionary<ulong, TranspositionTable>();
         #endregion
 
         /// <summary>
         /// Find best move for BOT
         /// </summary>
         /// <returns FPoint="move"></returns>
+        /// 
+
+
         public FPoint FindBestMove()
         {
+            // Random move if board is empty
             if (_board.IsBoardEmpty())
             {
                 int x = -1;
@@ -45,7 +70,8 @@ namespace Caro.Models.Services
                 x = randomMove.Next(_board.BoardRatio / 3, (_board.BoardRatio / 3) * 2);
                 y = randomMove.Next(_board.BoardRatio / 3, (_board.BoardRatio / 3) * 2);
                 return new FPoint(x, y);
-            }
+            } 
+            // Random move if board has only one move
             else if (_board.GetHistoryCount() == 1)
             {
                 List<FPoint> allPossibleMoves = _board.generateNeighboreMoves(1).ToList();
@@ -54,59 +80,200 @@ namespace Caro.Models.Services
                 return allPossibleMoves[randomMove.Next(0, allPossibleMoves.Count - 1)];
             }
 
+            // Find winning move
             FPoint botWinningMovePos = SearchBotWinningMove();
             if (botWinningMovePos != FPoint.NULL)
             {
                 return botWinningMovePos;
             }
 
-            KeyValuePair<FPoint, int> minimax = MinimaxAlphaBeta(MAX_DEPTH, int.MinValue, int.MaxValue, true);
-
-            KeyValuePair<FPoint, int> opponentWinningMovePos = SearchOpponentWinningMove();
-            if (opponentWinningMovePos.Key != FPoint.NULL)
+            FPoint opponentWinningMovePos = SearchOpponentWinningMove();
+            if (opponentWinningMovePos != FPoint.NULL)
             {
-                if (minimax.Value > opponentWinningMovePos.Value)
-                {
-                    return minimax.Key;
-                }
-                return opponentWinningMovePos.Key;
+                return opponentWinningMovePos;
             }
+
+            //if (_board.GetHistoryCount() > 30) maxDepth = 3;
+            //else maxDepth = 4;
+
+            KeyValuePair<FPoint, int> minimax = MinimaxAlphaBeta(maxDepth, int.MinValue, int.MaxValue, true, 0);
 
             return minimax.Key;
         }
 
-        private KeyValuePair<FPoint, int> MinimaxAlphaBeta(int depth, int alpha, int beta, bool isBotTurn)
+        //private KeyValuePair<FPoint, int> MinimaxAlphaBeta(int depth, int alpha, int beta, bool isBotTurn, int score)
+        //{
+        //    KeyValuePair<FPoint, int> moveScore = new KeyValuePair<FPoint, int>(FPoint.NULL, -1);
+        //    if (depth == 0)
+        //    {
+        //        moveScore = new KeyValuePair<FPoint, int>(FPoint.NULL, score);
+        //        return moveScore;
+        //    }
+        //    List<FPoint> allPossibleMoves = new List<FPoint>();
+
+
+        //    allPossibleMoves = _board.generateNeighboreMoves(2).ToList();
+        //    if (allPossibleMoves.Count > 25)
+        //    {
+        //        allPossibleMoves = _board.generateNeighboreMoves(1).ToList();
+        //    }
+
+        //    KeyValuePair<FPoint, int> bestMove = new KeyValuePair<FPoint, int>(allPossibleMoves[0],
+        //                                                                            isBotTurn ? int.MinValue :
+        //                                                                                        int.MaxValue);
+
+        //    if (allPossibleMoves.Count == 0)
+        //    {
+        //        return bestMove;
+        //    }
+
+        //    foreach (FPoint pos in allPossibleMoves)
+        //    {
+        //        if (isBotTurn)
+        //        {
+        //            _board.DoPlayAt(pos, true);
+        //            ulong zbHasingValue = _board.GetZobristHashValue();
+
+        //            if (_mode == AILevel.Mode1 && zobristMap.ContainsKey(zbHasingValue) && zobristMap[zbHasingValue].Value == depth)
+        //            {
+        //                //if (zobristMap[zbHasingValue].Value == depth)
+        //                //{
+        //                moveScore = new KeyValuePair<FPoint, int>(pos, zobristMap[zbHasingValue].Key);
+        //                //}
+        //            }
+        //            else
+        //            {
+        //                score += AIEvaluate.getScore(_board);
+        //                moveScore = MinimaxAlphaBeta(depth - 1, alpha, beta, !isBotTurn, score);
+
+        //                if (_mode == AILevel.Mode1)
+        //                {
+        //                    if (zobristMap.ContainsKey(zbHasingValue))
+        //                    {
+        //                        zobristMap[zbHasingValue] = new KeyValuePair<int, int>(moveScore.Value, depth);
+        //                    }
+        //                    else
+        //                        zobristMap.Add(zbHasingValue, new KeyValuePair<int, int>(moveScore.Value, depth));
+        //                }
+        //            }
+
+        //            _board.Undo(true);
+
+        //            if (moveScore.Value > bestMove.Value)
+        //            {
+        //                bestMove = new KeyValuePair<FPoint, int>(pos, moveScore.Value);
+        //            }
+        //            alpha = Math.Max(alpha, moveScore.Value);
+        //        }
+        //        else
+        //        {
+        //            _board.DoPlayAt(pos, true);
+
+        //            ulong zbHasingValue = _board.GetZobristHashValue();
+
+        //            if (_mode == AILevel.Mode1 && zobristMap.ContainsKey(zbHasingValue) && zobristMap[zbHasingValue].Value == depth)
+        //            {
+        //                //if (zobristMap[zbHasingValue].Value == depth)
+        //                //{
+        //                moveScore = new KeyValuePair<FPoint, int>(pos, zobristMap[zbHasingValue].Key);
+        //                //}
+        //            }
+        //            else
+        //            {
+        //                score -= AIEvaluate.getScore(_board);
+
+        //                moveScore = MinimaxAlphaBeta(depth - 1, alpha, beta, !isBotTurn, score);
+        //                if (_mode == AILevel.Mode1)
+        //                {
+        //                    if (zobristMap.ContainsKey(zbHasingValue))
+        //                    {
+        //                        zobristMap[zbHasingValue] = new KeyValuePair<int, int>(moveScore.Value, depth);
+        //                    }
+        //                    else
+        //                        zobristMap.Add(zbHasingValue, new KeyValuePair<int, int>(moveScore.Value, depth));
+        //                }
+        //            }
+        //            _board.Undo(true);
+
+        //            if (moveScore.Value < bestMove.Value)
+        //            {
+        //                bestMove = new KeyValuePair<FPoint, int>(pos, moveScore.Value);
+        //            }
+        //            beta = Math.Min(beta, moveScore.Value);
+        //        }
+
+        //        if (beta <= alpha) break;
+        //    }
+
+        //    return bestMove;
+        //}
+
+        private KeyValuePair<FPoint, int> MinimaxAlphaBeta(int depth, int alpha, int beta, bool isBotTurn, int score)
         {
             KeyValuePair<FPoint, int> moveScore = new KeyValuePair<FPoint, int>(FPoint.NULL, -1);
-
-            if (depth == 0 || (!isBotTurn && AIEvaluate.getScore(_board) > 100000000))
+            if (depth == 0)
             {
-                return new KeyValuePair<FPoint, int>(_board.GetLastestMove(), AIEvaluate.getScore(_board));
+                moveScore = new KeyValuePair<FPoint, int>(FPoint.NULL, score);
+                return moveScore;
             }
             List<FPoint> allPossibleMoves = new List<FPoint>();
-            if (_board.GetHistoryCount() == 1)
-            {
-                allPossibleMoves = _board.generateNeighboreMoves(1).ToList();
-            }
-            allPossibleMoves = _board.generateNeighboreMoves(2).ToList();
+
+
+            
+            allPossibleMoves = _board.generateNeighboreMoves(radius).ToList();
+            //if (allPossibleMoves.Count > 25)
+            //{
+            //    allPossibleMoves = _board.generateNeighboreMoves(1).ToList();
+            //}
+
+            KeyValuePair<FPoint, int> bestMove = new KeyValuePair<FPoint, int>(allPossibleMoves[0],
+                                                                                    isBotTurn ? int.MinValue :
+                                                                                                int.MaxValue);
 
             if (allPossibleMoves.Count == 0)
             {
-                return new KeyValuePair<FPoint, int>(_board.GetLastestMove(), AIEvaluate.getScore(_board));
+                return bestMove;
             }
-
-            KeyValuePair<FPoint, int> bestMove = new KeyValuePair<FPoint, int> ( allPossibleMoves[0], 
-                                                                                    isBotTurn ? int.MinValue : int.MaxValue );
 
             foreach (FPoint pos in allPossibleMoves)
             {
-                _board.DoPlayAt(pos, true);
-                //_board.SwapPlayer();
-                moveScore = MinimaxAlphaBeta(depth - 1, alpha, beta, !isBotTurn);
-                _board.Undo(true);
-
                 if (isBotTurn)
                 {
+                    _board.DoPlayAt(pos, true);
+                    ulong zbHasingValue = _board.GetZobristHashValue();
+
+                    if (transpositionMap.ContainsKey(zbHasingValue)
+                        && transpositionMap[zbHasingValue].Depth >= depth && transpositionMap[zbHasingValue].PosMove == pos)
+                    {
+                        moveScore = new KeyValuePair<FPoint, int>(pos, transpositionMap[zbHasingValue].Score);
+                    }
+                    else
+                    {
+                        score += AIEvaluate.getScore(_board);
+                        moveScore = MinimaxAlphaBeta(depth - 1, alpha, beta, !isBotTurn, score);
+
+                        if (transpositionMap.ContainsKey(zbHasingValue))
+                        {
+                            transpositionMap[zbHasingValue] = new TranspositionTable()
+                            {
+                                Score = moveScore.Value,
+                                Depth = depth,
+                                PosMove = pos,
+                            };
+                        }
+                        else
+                        {
+                            transpositionMap.Add(zbHasingValue, new TranspositionTable()
+                            {
+                                Score = moveScore.Value,
+                                Depth = depth,
+                                PosMove = pos,
+                            });
+                        }
+                    }
+
+                    _board.Undo(true);
+
                     if (moveScore.Value > bestMove.Value)
                     {
                         bestMove = new KeyValuePair<FPoint, int>(pos, moveScore.Value);
@@ -115,6 +282,41 @@ namespace Caro.Models.Services
                 }
                 else
                 {
+                    _board.DoPlayAt(pos, true);
+
+                    ulong zbHasingValue = _board.GetZobristHashValue();
+
+                    if (transpositionMap.ContainsKey(zbHasingValue)
+                        && transpositionMap[zbHasingValue].Depth >= depth && transpositionMap[zbHasingValue].PosMove == pos)
+                    {
+                        moveScore = new KeyValuePair<FPoint, int>(pos, transpositionMap[zbHasingValue].Score);
+                    }
+                    else
+                    {
+                        score -= AIEvaluate.getScore(_board);
+                        moveScore = MinimaxAlphaBeta(depth - 1, alpha, beta, !isBotTurn, score);
+
+                        if (transpositionMap.ContainsKey(zbHasingValue))
+                        {
+                            transpositionMap[zbHasingValue] = new TranspositionTable()
+                            {
+                                Score = moveScore.Value,
+                                Depth = depth,
+                                PosMove = pos,
+                            };
+                        }
+                        else
+                        {
+                            transpositionMap.Add(zbHasingValue, new TranspositionTable()
+                            {
+                                Score = moveScore.Value,
+                                Depth = depth,
+                                PosMove = pos,
+                            });
+                        }
+                    }
+                    _board.Undo(true);
+
                     if (moveScore.Value < bestMove.Value)
                     {
                         bestMove = new KeyValuePair<FPoint, int>(pos, moveScore.Value);
@@ -138,7 +340,6 @@ namespace Caro.Models.Services
             foreach (FPoint move in allPossibleMoves)
             {
                 _board.DoPlayAt(move, true);
-                //_board.SwapPlayer();
                 int score = AIEvaluate.getScore(_board);
                     
                 if (score > maxScore)
@@ -153,7 +354,7 @@ namespace Caro.Models.Services
             return FPoint.NULL;
         }
 
-        private KeyValuePair<FPoint,int> SearchOpponentWinningMove()
+        private FPoint SearchOpponentWinningMove()
         {
             HashSet<FPoint> allPossibleMoves = _board.generateNeighboreMoves(1);
 
@@ -176,13 +377,16 @@ namespace Caro.Models.Services
             }
 
 
-            if (maxScore > 10000)
+            if (maxScore >= 1000000000)
             {
-                //MessageBox.Show(maxScore.ToString());
-                return new KeyValuePair<FPoint, int> (bestMove, maxScore);
+                return bestMove;
             }
-            return new KeyValuePair<FPoint, int> ( FPoint.NULL, maxScore);
+            return FPoint.NULL;
         }
 
+        public void ClearZobristMap()
+        {
+            transpositionMap.Clear();
+        }
     }
 }

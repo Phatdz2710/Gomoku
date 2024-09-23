@@ -38,6 +38,9 @@ namespace Caro.Models
         public int CellSize     { get; set; }
 
         public List<List<int>>  Cells { get; set; }
+
+        private ulong zobristHash = 0;
+        private List<List<List<ulong>>> zobristTable = new List<List<List<ulong>>>();
         #endregion
 
         #region Constuctor
@@ -69,9 +72,41 @@ namespace Caro.Models
             } 
             _history.Clear();
             _gameLogic.SetBoardRatio(BoardRatio);
+            CreateNewZebristTable();
         }
 
-        public void CreateNewBoard(int boardRatio, Mode gameMode, CellState firstTurn)
+        public void CreateNewZebristTable()
+        {
+            zobristTable = new List<List<List<ulong>>>();
+            for (int i = 0; i < BoardRatio; i++)
+            {
+                zobristTable.Add(new List<List<ulong>>());
+                for(int j = 0; j < BoardRatio; j++)
+                {
+                    zobristTable[i].Add(new List<ulong>());
+                }
+            }
+            Random rand = new Random();
+            ulong GetUlongRandom()
+            {
+                uint hign = (uint)rand.Next();
+                uint low = (uint)rand.Next();
+                return ((ulong)hign << 32) | low;
+            }
+
+            for (int i = 0; i < BoardRatio; i++)
+            {
+                for (int j = 0; j < BoardRatio; j++)
+                {
+                    for (int k = 0; k < 3; k++)
+                    {
+                        zobristTable[i][j].Add(GetUlongRandom());
+                    }
+                }
+            }
+        }
+
+        public void CreateNewBoard(int boardRatio, Mode gameMode, CellState firstTurn, AILevel aiLevel)
         {
             ResizeBoard(boardRatio);
             switch(gameMode)
@@ -80,11 +115,14 @@ namespace Caro.Models
                     _currentStrategy = new PVPGameStrategy(this);
                     break;
                 case Mode.PVE:
-                    _currentStrategy = new PVEGameStrategy(this);
+                    _currentStrategy = new PVEGameStrategy(this, aiLevel);
                     break;
                 case Mode.LAN:
                     _currentStrategy = new LANGameStrategy(this);
                     _currentStrategy.SendJoinRequestToServer(boardRatio);
+                    break;
+                case Mode.EVE:
+                    _currentStrategy= new EVEGameStrategy(this);
                     break;
                 default:
                     _currentStrategy = new PVPGameStrategy(this);
@@ -119,21 +157,23 @@ namespace Caro.Models
         public void DoPlayAt(FPoint pos, bool isSimMove = false)
         {
             if (pos.X < 0 || pos.X >= BoardRatio || pos.Y < 0 || pos.Y >= BoardRatio
-                || Cells[pos.X][pos.Y] != 0) 
-                return;
-            
-            if (_currentStrategy == null) 
+                || Cells[pos.X][pos.Y] != 0)
                 return;
 
-            CellState nowTurn       = _currentStrategy.CurPiece ? CellState.X 
+            if (_currentStrategy == null)
+                return;
+
+            CellState nowTurn = _currentStrategy.CurPiece ? CellState.X
                                                                 : CellState.O;
-            Cells[pos.X][pos.Y]     = (int)nowTurn;
+            int zobristPos = _currentStrategy.CurPiece ? 1
+                                                    : 2;
+            Cells[pos.X][pos.Y] = (int)nowTurn;
             _history.Add(pos);
-            _playResult.Position    = pos;
-            _playResult.Piece       = nowTurn;
+            _playResult.Position = pos;
+            _playResult.Piece = nowTurn;
 
             SwapPlayer();
-            
+
             // Use this if you want do simulator move (Don't send event to ViewModel)
             // Remember to Undo after this
             if (!isSimMove)
@@ -141,6 +181,9 @@ namespace Caro.Models
                 UpdateBoardState(pos);
                 SendPlayResultToViewModel();
             }
+
+            zobristHash ^= zobristTable[pos.X][pos.Y][zobristPos];
+            //MessageBox.Show(zobristHash.ToString());
         }
 
         public void Undo(bool isSimUndo = false)
@@ -149,6 +192,7 @@ namespace Caro.Models
                 return;
 
             FPoint pos = _history[_history.Count - 1];
+            int zobristPos = Cells[pos.X][pos.Y] == 1 ? 1 : 2;
             Cells[pos.X][pos.Y] = 0;
             _history.RemoveAt(_history.Count - 1);
             _playResult.Position = pos;
@@ -161,6 +205,8 @@ namespace Caro.Models
             {
                 SendUndoResultToViewModel();
             }
+
+            zobristHash ^= zobristTable[pos.X][pos.Y][zobristPos];
         }
 
         #endregion
@@ -168,13 +214,14 @@ namespace Caro.Models
         #region Requests from BoardViewModel
         public void PlayAtPointRequest(FPoint pos)
         {
-            if (_currentStrategy == null) return;
+            if (_currentStrategy == null || _currentStrategy.IsBotThinking()) return;
             _currentStrategy.DoPlayAt(this, pos);
+
         }
 
         public void UndoRequest()
         {
-            if (_currentStrategy == null) return;
+            if (_currentStrategy == null || _currentStrategy.IsBotThinking()) return;
             _currentStrategy.Undo(this);
         }
 
@@ -384,6 +431,11 @@ namespace Caro.Models
         {
             if (_currentStrategy == null) return false;
             return _currentStrategy.IsBotThinking();
+        }
+
+        public ulong GetZobristHashValue()
+        {
+            return zobristHash;
         }
 
         #endregion

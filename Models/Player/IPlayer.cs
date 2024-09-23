@@ -38,5 +38,7 @@ namespace Caro.Models.Player
 
         public abstract void CancelMove();
 
+        public abstract void ClearZobristMap();
+
     }
 }

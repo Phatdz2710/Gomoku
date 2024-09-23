@@ -17,6 +17,8 @@ namespace Caro.Models.GameStrategy
         protected   Board     _board;
         public      EventHandler? PlayerDisconnected;
 
+        private Dictionary<int, int> zobristTable = new Dictionary<int, int>();
+
         public bool CurPiece { get; set; }
         public IGameStrategy(Board board)
         {
@@ -24,7 +26,6 @@ namespace Caro.Models.GameStrategy
             _player1    = new HumanPlayer(_board, CellState.X, "👤 Player 1");
             _player2    = new HumanPlayer(_board, CellState.O, "👤 Player 2");
             _currentPlayer = _player1;
-
             
             CurPiece    = true;
         }
@@ -68,7 +69,6 @@ namespace Caro.Models.GameStrategy
         public abstract bool IsConnectingToServer();
         public abstract bool IsReadyToStart();
         public abstract void DisconnectedToServer();
-
 
     }
 }

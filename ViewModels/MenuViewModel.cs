@@ -35,6 +35,11 @@ namespace Caro.ViewModels
             "9x9", "12x12", "15x15", "20x20"
         };
 
+        public List<string> ListBotMode { get; } = new List<string>()
+        {
+            "Easy", "Hard"
+        };
+
         private string _boardSize = String.Empty;
         private int _size = 0; 
         public string BoardSize
@@ -51,10 +56,25 @@ namespace Caro.ViewModels
             }
         }
 
-       
+        private string _botMode = String.Empty;
+        private AILevel aiLevel = AILevel.Easy;
+        public string BotMode
+        {
+            get => _botMode;
+            set
+            {
+                _botMode = value;
+                if (_botMode == "Easy") aiLevel = AILevel.Easy;
+                else if (_botMode == "Hard") aiLevel = AILevel.Hard;
+                OnPropertyChanged();
+            }
+        }
+
+
         public MenuViewModel()
         {
-            BoardSize       = ListBoardSize[0];
+            BoardSize       = ListBoardSize[3];
+            BotMode = ListBotMode[0];
             MainViewModel   = new MainViewModel();
             ThemeViewModel  = new ThemeViewModel();
             SoundViewModel  = new SoundViewModel();
@@ -71,7 +91,7 @@ namespace Caro.ViewModels
             mainWindow = new MainWindow();
             mainWindow.DataContext = MainViewModel;
             MainViewModel.SetMainWindowForBoardViewModel(mainWindow);
-            MainViewModel.RunMainWindow(_size, Mode.PVP, AILevel.Easy);
+            MainViewModel.RunMainWindow(_size, Mode.PVP, AILevel.Hard);
             
             mainWindow.Show();
             obj.Hide();
@@ -86,7 +106,7 @@ namespace Caro.ViewModels
             mainWindow = new MainWindow();
             mainWindow.DataContext = MainViewModel;
             MainViewModel.SetMainWindowForBoardViewModel(mainWindow);
-            MainViewModel.RunMainWindow(_size, Mode.PVE, AILevel.Easy);
+            MainViewModel.RunMainWindow(_size, Mode.PVE, aiLevel);
 
             mainWindow.Show();
             obj.Hide();

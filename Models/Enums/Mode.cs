@@ -10,6 +10,7 @@ namespace Caro.Models.Enums
     {
         PVP,
         PVE,
-        LAN
+        LAN,
+        EVE
     }
 }

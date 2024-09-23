@@ -222,5 +222,6 @@ namespace Caro.Models.GameStrategy
                 
             tcpClient.Close();
         }
+
     }
 }

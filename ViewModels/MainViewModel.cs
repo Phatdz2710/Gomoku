@@ -15,7 +15,6 @@ namespace Caro.ViewModels
     {
         public BoardViewModel BoardViewModel { get; }       = new BoardViewModel();
         public ThemeViewModel ThemeViewModel { get; set; }  = new ThemeViewModel();
-
         public SoundViewModel SoundViewModel { get; set; }  = new SoundViewModel();
 
         public int      BoardRatio      { get; set; } = 9;
