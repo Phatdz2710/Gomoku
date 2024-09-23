@@ -8,7 +8,7 @@ If any player gets 5 consecutive unblocked pieces who will win.
 ## Features
 
 - **Player vs Player (PVP):** Two players on the same computer play together. 
-- **Player vs AI (PVE):** Play with AI (use Minimax Alpha-Beta Algorithm (Reference from Sharpmoku))
+- **Player vs AI (PVE):** Play with AI (use Minimax Alpha-Beta Algorithm)
 - **Play over LAN:** Play with other player on the other computer over a local network.
 - **Undo:** Take a move back.
 - **New Game:** Reset board game.
